@@ -249,6 +249,114 @@
                 }
             );
         }
+        if ($("#deliveries-history").length) {
+            let unpaidDeliveries = 0;
+            let paidDeliveries = 0;
+            let issuesDeliveries = 0;
+
+            fetch("/dashboard-farmer-data")
+                .then((response) => response.json())
+                .then((data) => {
+                    unpaidDeliveries = data.deliveries.unpaid_deliveries;
+                    paidDeliveries = data.deliveries.paid_deliveries;
+                    issuesDeliveries = data.deliveries.issues;
+
+                    var areaData = {
+                        labels: [
+                            "Unpaid Deliveries",
+                            "Paid Deliveries",
+                            "Deliveries with Issues",
+                        ],
+                        datasets: [
+                            {
+                                data: [
+                                    unpaidDeliveries,
+                                    paidDeliveries,
+                                    issuesDeliveries,
+                                ],
+                                backgroundColor: [
+                                    "#1f10f1",
+                                    "#f0d25b",
+                                    "#ffabf0",
+                                ],
+                            },
+                        ],
+                    };
+                    var areaOptions = {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        segmentShowStroke: false,
+                        cutoutPercentage: 70,
+                        elements: {
+                            arc: {
+                                borderWidth: 0,
+                            },
+                        },
+                        legend: {
+                            display: false,
+                        },
+                        tooltips: {
+                            enabled: true,
+                        },
+                    };
+                    let transactionhistoryChartPlugins = {
+                        beforeDraw: function (chart) {
+                            var width = chart.chart.width,
+                                height = chart.chart.height,
+                                ctx = chart.chart.ctx;
+
+                            ctx.restore();
+                            var fontSize = 1;
+                            ctx.font = fontSize + "rem sans-serif";
+                            ctx.textAlign = "left";
+                            ctx.textBaseline = "middle";
+                            ctx.fillStyle = "#ffffff";
+
+                            var totals = Number(
+                                    unpaidDeliveries + paidDeliveries
+                                ).toLocaleString(),
+                                textX = Math.round(
+                                    (width - ctx.measureText(totals).width) / 2
+                                ),
+                                textY = height / 2.4;
+
+                            ctx.fillText(totals, textX, textY);
+
+                            ctx.restore();
+                            var fontSize = 0.75;
+                            ctx.font = fontSize + "rem sans-serif";
+                            ctx.textAlign = "left";
+                            ctx.textBaseline = "middle";
+                            ctx.fillStyle = "#6c7293";
+
+                            var texts = "Deliveries Stats",
+                                textsX = Math.round(
+                                    (width - ctx.measureText(totals).width) /
+                                        2.5
+                                ),
+                                textsY = height / 1.7;
+
+                            ctx.fillText(texts, textsX, textsY);
+                            ctx.save();
+                        },
+                    };
+                    var transactionhistoryChartCanvas = $("#deliveries-history")
+                        .get(0)
+                        .getContext("2d");
+                    var transactionhistoryChart = new Chart(
+                        transactionhistoryChartCanvas,
+                        {
+                            type: "doughnut",
+                            data: areaData,
+                            options: areaOptions,
+                            plugins: transactionhistoryChartPlugins,
+                        }
+                    );
+                })
+                .catch((error) => {
+                    console.error("Fetch Error:", error);
+                });
+        }
         if ($("#owl-carousel-basic").length) {
             $("#owl-carousel-basic").owlCarousel({
                 loop: true,

@@ -95,58 +95,102 @@ class FarmerController extends Controller
         return $farmers_count;
     }
 
-    // public function getFarmersGrowthRate(int $period_range = PERIOD_RANGE::DAY)
-    // {
-    //     $farmers_growth_rate = 0.0;
-    //     $previous_farmers_count = $this->getFarmersCount($period_range);
-    //     $farmers_count = 0;
+    public function getFarmerData(int $user_id, bool $include_metadata = false)
+    {
+        // Get the farmer details, amount of milk sold, amount of money earned, number of cows owned, etc.
+        $farmer = DB::table('users')
+            ->where('users.id', $user_id)
+            ->join('farmers', 'farmers.user_id', '=', 'users.id')
+            ->join('farmer_cows', 'farmers.id', '=', 'farmer_cows.farmer_id')
+            ->join('milk_delivery', 'farmers.id', '=', 'milk_delivery.farmer_id')
+            ->join('rates', 'milk_delivery.rate_id', '=', 'rates.id')
+            ->join('cow_breeds', 'rates.breed_id', '=', 'cow_breeds.id')
+            ->select(
+                'users.name AS farmer_name',
+                'users.email',
+                'users.created_at',
+                'farmers.phone',
+                'farmers.location',
+                'farmers.is_verified',
+                'farmers.payment_method',
+                DB::raw('(SELECT SUM(milk_capacity) FROM milk_delivery WHERE milk_delivery.farmer_id = farmers.id) AS total_milk_sold'),
+                DB::raw('SUM(milk_capacity * rate) AS total_earnings'),
+                DB::raw('(SELECT COUNT(*) FROM milk_delivery WHERE milk_delivery.farmer_id = farmers.id) AS total_deliveries'),
+                DB::raw('(SELECT COUNT(*) FROM milk_delivery WHERE milk_delivery.farmer_id = farmers.id AND is_paid = 0) AS unpaid_deliveries'),
+                DB::raw('(SELECT COUNT(*) FROM milk_delivery WHERE milk_delivery.farmer_id = farmers.id AND had_issues = 1) AS issues'),
+                DB::raw('(SELECT COUNT(*) FROM farmer_cows WHERE farmer_cows.farmer_id = farmers.id) AS breeds_owned'),
+                DB::raw('COUNT(CASE WHEN milk_delivery.is_paid = 1 THEN milk_delivery.farmer_id END) AS paid_deliveries'),
+                'cow_breeds.breed AS breed',
+                'rates.rate',
+                'milk_delivery.created_at AS last_delivery_time'
+            )
+            // include farmer contact information such as email if include metadata is true
+            ->when($include_metadata, function ($query) {
+                return $query->addSelect(['users.email', 'farmers.id', 'farmers.phone', 'farmers.location']);
+            })
+            ->groupBy(
+                'users.name',
+                'users.email',
+                'farmers.id',
+                'farmers.phone',
+                'farmers.location',
+                'users.created_at',
+                'farmers.payment_method',
+                'farmers.is_verified',
+                'cow_breeds.breed',
+                'rates.rate',
+                'milk_delivery.created_at'
+            )
+            ->first();
 
-    //     if ($period_range == PERIOD_RANGE::DAY) {
-    //         $today = Carbon::today()->toDateString();
-    //         $farmers_count = DB::table('farmers')
-    //             ->join('users', 'farmers.user_id', '=', 'users.id')
-    //             ->where('users.created_at', "=",$today)
-    //             ->count();
-    //     } elseif ($period_range == PERIOD_RANGE::WEEK) {
-    //         $this_week_start = Carbon::today()->startOfWeek()->toDateString();
-    //         $today = Carbon::today()->toDateString();
+        return $farmer;
+    }
 
-    //         $farmers_count = DB::table('farmers')
-    //             ->join('users', 'farmers.user_id', '=', 'users.id')
-    //             ->whereBetween('users.created_at', [$this_week_start, $today])
-    //             ->count();
-    //     } elseif ($period_range == PERIOD_RANGE::MONTH) {
-    //         $this_month_start = Carbon::today()->startOfMonth()->toDateString();
-    //         $today = Carbon::today()->toDateString();
+    public function getFarmersDeliveries(int $user_id, int $limit = 0)
+    {
+        $deliveries = DB::table('milk_delivery')
+            ->join('farmers', 'milk_delivery.farmer_id', '=', 'farmers.id')
+            ->join('users', 'farmers.user_id', '=', 'users.id')
+            ->join('rates', 'milk_delivery.rate_id', '=', 'rates.id')
+            ->join('cow_breeds', 'rates.breed_id', '=', 'cow_breeds.id')
+            ->select(
+                'users.name AS farmer_name',
+                'cow_breeds.breed AS breed',
+                'rates.rate',
+                'milk_delivery.milk_capacity',
+                'milk_delivery.is_paid',
+                'milk_delivery.had_issues',
+                'milk_delivery.created_at AS delivery_time'
+            )
+            ->where('users.id', $user_id)
+            // apply limit if specified
+            ->when($limit > 0, function ($query) use ($limit) {
+                return $query->limit($limit);
+            })
+            ->get();
 
-    //         $farmers_count = DB::table('farmers')
-    //             ->join('users', 'farmers.user_id', '=', 'users.id')
-    //             ->whereBetween('users.created_at', [$this_month_start, $today])
-    //             ->count();
-    //     } elseif ($period_range == PERIOD_RANGE::YEAR) {
-    //         $this_year_start = Carbon::today()->startOfMonth()->toDateString();
-    //         $today = Carbon::today()->toDateString();
+        // print_r($deliveries);
+        // die(0);
 
-    //         $farmers_count = DB::table('farmers')
-    //             ->join('users', 'farmers.user_id', '=', 'users.id')
-    //             ->whereBetween('users.created_at', [$this_year_start, $today])
-    //             ->count();
-    //     } elseif ($period_range == PERIOD_RANGE::ALL) {
-    //         // SHOULD NEVER BE CALLED
-    //         $farmers_count = DB::table('farmers')
-    //             ->join('users', 'farmers.user_id', '=', 'users.id')
-    //             ->count();
-    //     }
+        return $deliveries;
+    }
 
-    //     // calculate farmers growth rate
-    //     if ($previous_farmers_count > 0) {
-    //         $farmers_growth_rate = ($farmers_count - $previous_farmers_count) / $previous_farmers_count;
-    //     }
+    public function getFarmersDeliveriesStatus(int $user_id)
+    {
+        // get number of paid deliveries, unpaid and deliveries with issues for the specified farmer all summed up
+        $deliveries = DB::table('milk_delivery')
+            ->join('farmers', 'milk_delivery.farmer_id', '=', 'farmers.id')
+            ->join('users', 'farmers.user_id', '=', 'users.id')
+            ->select(
+                DB::raw('COUNT(CASE WHEN milk_delivery.is_paid = 1 THEN milk_delivery.farmer_id END) AS paid_deliveries'),
+                DB::raw('COUNT(CASE WHEN milk_delivery.is_paid = 0 THEN milk_delivery.farmer_id END) AS unpaid_deliveries'),
+                DB::raw('COUNT(CASE WHEN milk_delivery.had_issues = 1 THEN milk_delivery.farmer_id END) AS issues')
+            )
+            ->where('users.id', $user_id)
+            ->first();
 
-    //     echo $farmers_count . "  " . $previous_farmers_count . "  " . $farmers_growth_rate;
-
-    //     return $farmers_growth_rate;
-    // }
+        return $deliveries;
+    }
 
     public function getFarmersGrowthRate(int $period_range = PERIOD_RANGE::DAY)
     {

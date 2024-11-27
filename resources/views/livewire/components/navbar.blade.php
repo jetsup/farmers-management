@@ -1,4 +1,4 @@
-<nav class="bg-green-700 text-white shadow-lg py-4">
+<nav class="bg-green-900 text-white shadow-lg py-4">
     <div class="container flex justify-between items-center px-4">
         <div class="flex items-center space-x-4">
             <a href="#" class="text-2xl font-bold"><x-authentication-card-logo />&nbsp; MilkFarmers Co.</a>
