@@ -1,4 +1,6 @@
-<x-guest-layout>
+<x-layout title="Register">
+    @livewire('components.navbar')
+
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
@@ -57,4 +59,6 @@
             </div>
         </form>
     </x-authentication-card>
-</x-guest-layout>
+
+    @livewire('components.footer')
+</x-layout>
