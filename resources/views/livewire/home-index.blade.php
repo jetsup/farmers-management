@@ -80,15 +80,13 @@
             <p class="text-gray-600 mb-8">
                 Have questions? Need assistance? Reach out to us!
             </p>
-            <form action="{{ route('contact-us') }}" method="POST"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
-                @csrf
-
-                <input type="text" placeholder="Your Name" class="p-3 border rounded focus:outline-green-700"
-                    required>
-                <input type="email" placeholder="Your Email" class="p-3 border rounded focus:outline-green-700"
-                    required>
-                <textarea placeholder="Your Message" class="p-3 border rounded col-span-2 focus:outline-green-700" required></textarea>
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto" wire:submit.prevent="sendMessage">
+                <input type="text" placeholder="Your Full Name" class="text-dark p-3 border rounded focus:outline-green-700"
+                    required wire:model="sender_name">
+                <input type="email" placeholder="Your Email" class="text-dark p-3 border rounded focus:outline-green-700"
+                    required wire:model="sender_email">
+                <textarea placeholder="Your Message Goes Here" class="text-dark p-3 border rounded col-span-2 focus:outline-green-700" required
+                    wire:model="sender_message"></textarea>
                 <button type="submit"
                     class="bg-green-700 text-white px-6 py-3 rounded shadow hover:bg-green-800 col-span-2">
                     Send Message

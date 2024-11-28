@@ -12,9 +12,9 @@ use App\Http\Middleware\UndecidedAuth;
 use App\Livewire\BecomeFarmer;
 use App\Livewire\CowBreedsAdmin;
 use App\Livewire\CowsFarmer;
-use App\Livewire\CowsRegisterFarmer;
 use App\Livewire\Dashboard;
 use App\Livewire\FarmersAdmin;
+use App\Livewire\HomeIndex;
 use App\Livewire\IndexAdmin;
 use App\Livewire\MilkRatesAdmin;
 use App\Livewire\MilkReceptionAdmin;
@@ -28,9 +28,14 @@ Route::get('/', function () {
     return view('index');
 })->name('index')->middleware('guest');
 
-Route::get('/home', function () {
-    return view('index');
-})->name('home')->middleware(UndecidedAuth::class);
+Route::get('/home', HomeIndex::class)->name('home')->middleware(UndecidedAuth::class);
+Route::get('/email-preview', function(){
+    return view('emails.contact-us',[
+        'sender_name' => 'John Doe',
+        'sender_email' => 'john@gmail.com',
+        'sender_message' => 'Hello, I am John Doe. I would like to know more about your services.'
+    ]);
+})->name('email-preview')->middleware(UndecidedAuth::class);
 Route::get('/register-farmer', BecomeFarmer::class)->name('become-farmer')->middleware(UndecidedAuth::class);
 Route::post('/register-farmer', [FarmerController::class, "registerFarmer"])->name('become-farmer')->middleware(UndecidedAuth::class);
 

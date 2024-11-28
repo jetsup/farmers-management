@@ -1,5 +1,5 @@
 <x-layout title="Home">
-    <livewire:index />
+    <livewire:home-index />
     @section('footer')
         <x-footer />
     @endsection
