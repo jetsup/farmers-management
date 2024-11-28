@@ -26,7 +26,8 @@
                             </div>
                             <div class="col-3">
                                 <div class="icon icon-box-success ">
-                                    <span class="mdi mdi-arrow-top-right icon-item"></span>
+                                    <span
+                                        class="mdi {{ $farmer->delivery_rate > 0 ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-left' }} icon-item"></span>
                                 </div>
                             </div>
                         </div>
@@ -86,11 +87,13 @@
                                 @endif
                             </div>
                             <div class="col-3">
-                                <div class="icon icon-box-danger">
-                                    <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+                                <div class="icon icon-box-success ">
+                                    <span
+                                        class="mdi {{ $farmer->delivery_rate > 0 ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-left' }} icon-item"></span>
                                 </div>
                             </div>
                         </div>
+                        
                         <h6 class="text-muted font-weight-normal">Deliveries Made</h6>
                     </div>
                 </div>
@@ -112,7 +115,7 @@
                             </div>
                             <div class="col-3">
                                 <div class="icon icon-box-success ">
-                                    <span class="mdi mdi-arrow-top-right icon-item"></span>
+                                    <span class="mdi mdi-arrow-expand icon-item"></span>
                                 </div>
                             </div>
                         </div>
@@ -166,7 +169,7 @@
                                                     <div class="flex-grow">
                                                         <h6 class="preview-subject">Delivered
                                                             {{ $delivery->milk_capacity }} litres of
-                                                            {{ $delivery->breed }}
+                                                            {{ ucwords($delivery->breed) }}
                                                             milk</h6>
                                                         @if ($delivery->is_paid)
                                                             <p class="mb-0 text-success">Paid KES.

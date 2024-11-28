@@ -329,10 +329,10 @@
                             ctx.textBaseline = "middle";
                             ctx.fillStyle = "#6c7293";
 
-                            var texts = "Deliveries Stats",
+                            var texts = "Stats",
                                 textsX = Math.round(
                                     (width - ctx.measureText(totals).width) /
-                                        2.5
+                                        2.17
                                 ),
                                 textsY = height / 1.7;
 

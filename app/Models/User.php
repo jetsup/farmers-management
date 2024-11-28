@@ -66,4 +66,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function farmer()
+    {
+        return $this->hasOne(Farmer::class);
+    }
 }
