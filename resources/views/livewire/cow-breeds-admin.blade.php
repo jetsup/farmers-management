@@ -9,13 +9,12 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <form class="forms-sample" action="{{ route('cow-breeds-admin') }}" method="POST">
-                                    @csrf
+                                <form class="forms-sample" wire:submit.prevent="createBreed">
                                     <div class="form-group row">
-                                        <label for="breed" class="col-sm-3 col-form-label">Breed</label>
+                                        <label for="breed_name" class="col-sm-3 col-form-label">Breed</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="breed" name="breed"
-                                                placeholder="Specific Recipient">
+                                            <input type="text" class="form-control" id="breed_name" name="breed_name"
+                                                placeholder="Specific Recipient" wire:model="breed_name">
                                         </div>
                                     </div>
 

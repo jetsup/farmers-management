@@ -9,13 +9,17 @@
                 At MilkFarmers Co., we help farmers improve productivity, monitor their sales, and support their
                 livelihoods. Join our network today!
             </p>
-            <button class="bg-green-700 text-white px-6 py-3 rounded shadow hover:bg-green-800">
-                @guest
+            @guest
+                <button class="bg-green-700 text-white px-6 py-3 rounded shadow hover:bg-green-800">
                     Get Started
-                @else
-                    <a href="{{ route('become-farmer') }}">Register as a farmer</a>
-                @endguest
-            </button>
+                </button>
+            @else
+                @if (auth()->user()->is_admin == 0)
+                    <button class="bg-green-700 text-white px-6 py-3 rounded shadow hover:bg-green-800">
+                        <a href="{{ route('become-farmer') }}">Register as a farmer</a>
+                    </button>
+                @endif
+            @endguest
         </div>
     </section>
 
@@ -81,12 +85,12 @@
                 Have questions? Need assistance? Reach out to us!
             </p>
             <form class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto" wire:submit.prevent="sendMessage">
-                <input type="text" placeholder="Your Full Name" class="text-dark p-3 border rounded focus:outline-green-700"
-                    required wire:model="sender_name">
-                <input type="email" placeholder="Your Email" class="text-dark p-3 border rounded focus:outline-green-700"
-                    required wire:model="sender_email">
-                <textarea placeholder="Your Message Goes Here" class="text-dark p-3 border rounded col-span-2 focus:outline-green-700" required
-                    wire:model="sender_message"></textarea>
+                <input type="text" placeholder="Your Full Name"
+                    class="text-dark p-3 border rounded focus:outline-green-700" required wire:model="sender_name">
+                <input type="email" placeholder="Your Email"
+                    class="text-dark p-3 border rounded focus:outline-green-700" required wire:model="sender_email">
+                <textarea placeholder="Your Message Goes Here" class="text-dark p-3 border rounded col-span-2 focus:outline-green-700"
+                    required wire:model="sender_message"></textarea>
                 <button type="submit"
                     class="bg-green-700 text-white px-6 py-3 rounded shadow hover:bg-green-800 col-span-2">
                     Send Message

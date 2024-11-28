@@ -28,7 +28,7 @@ Route::get('/', function () {
     return view('index');
 })->name('index')->middleware('guest');
 
-Route::get('/home', HomeIndex::class)->name('home')->middleware(UndecidedAuth::class);
+Route::get('/home', HomeIndex::class)->name('home');//->middleware(UndecidedAuth::class);
 Route::get('/email-preview', function(){
     return view('emails.contact-us',[
         'sender_name' => 'John Doe',

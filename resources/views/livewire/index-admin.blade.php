@@ -141,7 +141,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h6 class="text-muted font-weight-normal">Current Expense</h6>
+                        <h6 class="text-muted font-weight-normal">Current Expense (Will Implement)</h6>
                     </div>
                 </div>
             </div>

@@ -103,6 +103,14 @@
                 <span class="menu-title">Cow Breeds</span>
             </a>
         </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ route('milk-rates-admin') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-cash-multiple"></i>
+                </span>
+                <span class="menu-title">Rates</span>
+            </a>
+        </li>
         <hr>
         <li class="nav-item menu-items">
             <a class="nav-link" href="{{ route('notifications-admin') }}">
