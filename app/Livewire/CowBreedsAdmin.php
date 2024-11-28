@@ -10,6 +10,7 @@ class CowBreedsAdmin extends Component
     public function render()
     {
         $breeds = CowBreeds::all();
+        
         return view('livewire.cow-breeds-admin', [
             'breeds' => $breeds,
         ])->layout('layouts.admin')->title('Cow Breeds');
