@@ -14,8 +14,17 @@ jobs:
       # install and set up laravel and php8.0
       - name: Update apt-get
         run: sudo apt-get update
+
+      - name: Install Dependencies
+        run: apt install curl gpg gnupg2 software-properties-common ca-certificates apt-transport-https lsb-release -y
+      - name: Add PHP Repository
+        run: sudo add-apt-repository ppa:ondrej/php
+      - name: Update apt-get
+        run: sudo apt-get update
+
+
       - name: Install PHP
-        run: sudo apt-get install php8.0*
+        run: sudo apt-get install php8.3*
 
       - name: Install Composer
         run: wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
