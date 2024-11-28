@@ -233,8 +233,8 @@
                                         @endforeach
                                     @else
                                         <div class="preview-thumbnail">
-                                            <div class="preview-icon bg-primary">
-                                                <i class="mdi mdi-account"></i>
+                                            <div class="text-center">
+                                                <p class="text-warning">No recent deliveries</p>
                                             </div>
                                         </div>
                                     @endif

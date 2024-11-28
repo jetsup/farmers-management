@@ -63,6 +63,15 @@
             <span class="nav-link">Navigation</span>
         </li>
         <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ route('milk-reception-admin') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-speedometer"></i>
+                </span>
+                <span class="menu-title">Milk Reception</span>
+            </a>
+        </li>
+        <hr>
+        <li class="nav-item menu-items">
             <a class="nav-link" href="{{ route('dashboard-admin') }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-speedometer"></i>
@@ -87,11 +96,29 @@
             </a>
         </li>
         <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ route('cow-breeds-admin') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-nature-people"></i>
+                </span>
+                <span class="menu-title">Cow Breeds</span>
+            </a>
+        </li>
+        <hr>
+        <li class="nav-item menu-items">
             <a class="nav-link" href="{{ route('notifications-admin') }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-bell-outline"></i>
                 </span>
                 <span class="menu-title">Notifications</span>
+            </a>
+        </li>
+        <hr>
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ route('users-admin') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-account"></i>
+                </span>
+                <span class="menu-title">Users</span>
             </a>
         </li>
     </ul>

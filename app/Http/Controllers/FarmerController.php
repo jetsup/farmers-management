@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Farmer;
+use App\Models\FarmerCows;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Http\Request;
 
 enum PERIOD_RANGE
 {
@@ -16,6 +19,28 @@ enum PERIOD_RANGE
 
 class FarmerController extends Controller
 {
+    public function registerFarmer(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string|max:15',
+            'location' => 'required|string|max:25',
+            'payment_method' => 'required|string|max:25',
+        ]);
+
+        $farmer = new Farmer();
+        $farmer->phone = $request->phone;
+        $farmer->location = $request->location;
+        $farmer->payment_method = $request->payment_method;
+        $farmer->user_id = auth()->user()->id;
+        $farmer->save();
+
+        $user = auth()->user();
+        $user->is_admin = 2;
+        $user->save();
+
+        return redirect()->route('dashboard-farmer');
+    }
+
     public function getFarmers()
     {
         $farmers = DB::table('farmers')
@@ -40,8 +65,6 @@ class FarmerController extends Controller
                 'farmers.payment_method',
                 'farmers.is_verified'
             )->get();
-
-        // echo $farmers;
 
         return $farmers;
     }
@@ -271,11 +294,9 @@ class FarmerController extends Controller
         // FIXME: fix the logic for calculating growth rate
         if ($previous_farmers_count > $farmers_count) {
             $farmers_growth_rate = (($previous_farmers_count - $farmers_count) / $previous_farmers_count) * 100;
-        } elseif ($previous_farmers_count < $farmers_count) {
+        } elseif ($previous_farmers_count < $farmers_count && $previous_farmers_count != 0) {
             $farmers_growth_rate = (($farmers_count - $previous_farmers_count) / $previous_farmers_count) * 100;
         }
-
-        // echo $farmers_count . "  " . $previous_farmers_count . "  " . $farmers_growth_rate;
 
         return $farmers_growth_rate;
     }
@@ -392,8 +413,6 @@ class FarmerController extends Controller
         } elseif ($previous_milk_delivered < $milk_delivered) {
             $milk_growth_rate = (($milk_delivered - $previous_milk_delivered) / $previous_milk_delivered) * 100;
         }
-
-        // echo $milk_delivered . "  " . $previous_milk_delivered . "  " . $milk_growth_rate;
 
         return $milk_growth_rate;
     }
@@ -526,8 +545,6 @@ class FarmerController extends Controller
             $revenue_growth_rate = (($total_revenue - $previous_revenue) / $previous_revenue) * 100;
         }
 
-        // echo $total_revenue . "  " . $previous_revenue . "  " . $revenue_growth_rate;
-
         return $revenue_growth_rate;
     }
 
@@ -654,14 +671,13 @@ class FarmerController extends Controller
                 'farmers.payment_method',
                 'cow_breeds.breed AS breed',
                 'rates.rate',
+                'milk_delivery.id',
                 'milk_delivery.milk_capacity',
                 'milk_delivery.is_paid',
                 'milk_delivery.had_issues',
                 'milk_delivery.created_at AS delivery_time'
             )
             ->get();
-
-        // echo $farmers_records;
 
         return $farmers_records;
     }
@@ -697,8 +713,6 @@ class FarmerController extends Controller
                 'cow_breeds.breed',
             )->orderBy('milk_delivery.created_at', 'desc')
             ->limit($number_of_results)->get();
-
-        // echo $recent_payments;
 
         // $recent_payments = DB::table('milk_delivery')->orderBy('created_at', 'desc')->limit($number_of_results)->get();
         return $recent_payments;

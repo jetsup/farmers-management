@@ -13,8 +13,8 @@ return new class extends Migration {
     {
         Schema::create('farmers', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class, 'user_id');
-            $table->string('phone');
+            $table->foreignIdFor(User::class, 'user_id')->unique();
+            $table->string('phone')->unique();
             $table->string('location');
             $table->string('payment_method')->default('mpesa');//mpesa, bank, cash
             $table->boolean('is_verified')->default(false);

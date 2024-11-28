@@ -78,5 +78,13 @@
                 <span class="menu-title">Reports</span>
             </a>
         </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ route('cows-farmer') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-cow"></i>
+                </span>
+                <span class="menu-title">Cows</span>
+            </a>
+        </li>
     </ul>
 </nav>

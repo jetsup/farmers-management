@@ -9,13 +9,20 @@
             </ul>
         </div>
         <div>
-            <button class="bg-white text-green-700 px-4 py-2 rounded shadow dropdown-hover relative">
-                Join Us
-                <div class="dropdown-menu absolute right-0 mt-2 bg-white shadow-lg py-2 hidden">
-                    <a href="{{ route('login') }}" class="block px-4 py-2 hover:bg-green-100">Login</a>
-                    <a href="{{ route('register') }}" class="block px-4 py-2 hover:bg-green-100">Register</a>
-                </div>
-            </button>
+            @guest
+                <button class="bg-white text-green-700 px-4 py-2 rounded shadow dropdown-hover relative">
+                    Join Us
+                    <div class="dropdown-menu absolute right-0 mt-2 bg-white shadow-lg py-2 hidden">
+                        <a href="{{ route('login') }}" class="block px-4 py-2 hover:bg-green-100">Login</a>
+                        <a href="{{ route('register') }}" class="block px-4 py-2 hover:bg-green-100">Register</a>
+                    </div>
+                </button>
+            @else
+                <form method="POST" action="{{ route('logout') }}" class="rounded-75">
+                    @csrf
+                    <button type="submit" class="block w-full text-left px-4 py-2 hover:bg-green-600">Logout</button>
+                </form>
+            @endguest
         </div>
     </div>
 </nav>

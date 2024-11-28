@@ -25,18 +25,26 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <img src="assets/images/faces/face1.jpg" alt="image" />
-                                                        <span class="pl-2">{{ $record->farmer_name }}</span>
+                                                        <span class="pl-2">{{ ucwords($record->farmer_name) }}</span>
                                                     </div>
                                                 </td>
-                                                <td> {{ $record->breed }} </td>
+                                                <td class="text-center"> {{ ucwords($record->breed) }} </td>
                                                 <td> {{ number_format($record->milk_capacity, 0, '.', ',') }} </td>
                                                 <td> {{ $record->rate }} </td>
                                                 <td> {{ number_format($record->rate * $record->milk_capacity, 2, '.', ',') }}
                                                 </td>
                                                 <td> {{ $record->delivery_time }} </td>
                                                 <td>
-                                                    <div class="badge {{ $record->is_paid ? 'badge-outline-success' : 'badge-outline-warning' }}">
-                                                        {{ $record->is_paid ? 'Paid' : 'Not Paid' }}</div>
+                                                    @if ($record->is_paid)
+                                                        <div
+                                                            class="badge {{ $record->is_paid ? 'badge-outline-success' : 'badge-outline-warning' }}">
+                                                            {{ $record->is_paid ? 'Paid' : 'Not Paid' }}
+                                                        </div>
+                                                    @else
+                                                        <button class="btn btn-outline-warning"
+                                                            wire:click="payFarmer({{ $record->id }})">Pay
+                                                        </button>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -17,6 +17,7 @@ return new class extends Migration {
                 ->references("id")->on("farmers")->constrained()->onDelete('set null');
             $table->foreignId('breed_id')->nullable()
                 ->references('id')->on('cow_breeds')->constrained()->onDelete('set null');
+            $table->string('name');
             $table->timestamps();
         });
     }

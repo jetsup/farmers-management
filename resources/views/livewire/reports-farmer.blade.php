@@ -28,7 +28,7 @@
                                                 </td>
                                                 <td> {{ $delivery->milk_capacity }} </td>
                                                 <td> {{ ucwords($delivery->rate) }} </td>
-                                                <td> {{ number_format($delivery->milk_capacity * $delivery->rate, 2, '.', '.') }}
+                                                <td> {{ number_format($delivery->milk_capacity * $delivery->rate, 2, '.', ',') }}
                                                 </td>
                                                 <td>
                                                     <div
@@ -55,7 +55,6 @@
             <a href="{{ route('reports-farmer-download') }}" class="text-decoration-none text-success">
                 <i class="mdi mdi-download"></i> Download Your Reports
             </a>
-            {{-- <i class="mdi mdi-download"></i> Download Your Reports --}}
         </button>
     </div>
 </div>

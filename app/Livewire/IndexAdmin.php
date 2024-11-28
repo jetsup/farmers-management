@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\PERIOD_RANGE;
+use App\Models\Farmer;
 use DateTime;
 use Livewire\Component;
 
@@ -39,7 +40,7 @@ class IndexAdmin extends Component
         }
 
         // Get farmers' data
-        $total_farmers = (new FarmerController())->getFarmersCount(PERIOD_RANGE::ALL);
+        $total_farmers = Farmer::count();
         $farmers_growth_rate = (new FarmerController())->getFarmersGrowthRate(PERIOD_RANGE::DAY);
 
         // Get milk's data
@@ -50,14 +51,26 @@ class IndexAdmin extends Component
         $total_revenue = (new FarmerController())->getTotalRevenue(PERIOD_RANGE::ALL);
         $revenue_growth_rate = (new FarmerController())->getRevenueGrowthRate(PERIOD_RANGE::DAY);
         $monthly_revenue = (new FarmerController())->getTotalRevenue(PERIOD_RANGE::MONTH);
-        $last_revenue_received_at = (new FarmerController())->getLastPaymentMade(PERIOD_RANGE::MONTH)->last_payment_time;
+        $last_revenue_received_at = (new FarmerController())->getLastPaymentMade(PERIOD_RANGE::MONTH);
+
+        if ($last_revenue_received_at != null) {
+            $last_revenue_received_at = $last_revenue_received_at->last_payment_time;
+        } else {
+            $last_revenue_received_at = 'No revenue received yet';
+        }
 
         // Get expenses' data
         // TODO: Implement based on where expenses are stored
 
         // Get monthly transaction history
         $monthly_farmers_payments = (new FarmerController())->getTotalRevenue(PERIOD_RANGE::MONTH);
-        $last_farmer_paid_at = (new FarmerController())->getLastPaymentMade(PERIOD_RANGE::MONTH)->last_payment_time;
+        $last_farmer_paid_at = (new FarmerController())->getLastPaymentMade(PERIOD_RANGE::MONTH);
+
+        if ($last_farmer_paid_at != null) {
+            $last_farmer_paid_at = $last_farmer_paid_at->last_payment_time;
+        } else {
+            $last_farmer_paid_at = 'No payment made yet';
+        }
 
 
         return view('livewire.index-admin', [

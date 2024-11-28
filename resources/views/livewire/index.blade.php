@@ -13,7 +13,7 @@
                 @guest
                     Get Started
                 @else
-                    <a href="{{ route('dashboard') }}">Dashboard</a>
+                    <a href="{{ route('become-farmer') }}">Register as a farmer</a>
                 @endguest
             </button>
         </div>

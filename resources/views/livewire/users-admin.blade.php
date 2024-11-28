@@ -9,30 +9,39 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th> Farmer's Name </th>
-                                        <th> Breeds Owned </th>
-                                        <th> Payment Mode </th>
+                                        <th> Full Name </th>
+                                        <th> Role </th>
                                         <th> Member Since </th>
                                         <th> Verification Status </th>
+                                        <th> Action </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($farmers) > 0)
-                                        @foreach ($farmers as $farmer)
+                                    @if (count($users) > 0)
+                                        @foreach ($users as $user)
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <img src="assets/images/faces/face1.jpg" alt="image" />
-                                                        <span class="pl-2">{{ ucwords($farmer->farmer_name) }}</span>
+                                                        <span class="pl-2">{{ ucwords($user->name) }}</span>
                                                     </div>
                                                 </td>
-                                                <td class="text-right"> {{ $farmer->breed_count }} </td>
-                                                <td> {{ ucwords($farmer->payment_method) }} </td>
-                                                <td> {{ $farmer->created_at }} </td>
+                                                <td> {{ $user->is_admin === 1 ? 'Admin' : 'Farmer' }} </td>
+                                                <td> {{ $user->created_at }} </td>
                                                 <td>
                                                     <div
-                                                        class="badge {{ $farmer->is_verified ? 'badge-outline-success' : 'badge-outline-danger' }}">
-                                                        {{ $farmer->is_verified ? 'Verified' : 'Not Verified' }}</div>
+                                                        class="badge {{ $user->is_verified ? 'badge-outline-success' : 'badge-outline-danger' }}">
+                                                        {{ $user->is_verified ? 'Verified' : 'Not Verified' }}
+                                                    </div>
+                                                </td>
+                                                {{-- <td> {{ ucwords($user->payment_method) }} </td> --}}
+                                                <td>
+                                                    <div class="badge ">
+                                                        <a href="{{ route('convert-user-admin', ['userID' => $user->id]) }}"
+                                                            class="btn {{ $user->is_admin === 1 ? 'btn-outline-success' : 'btn-outline-warning' }}">
+                                                            {{ $user->is_admin === 1 ? 'Remove Admin' : 'Make Admin' }}
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
