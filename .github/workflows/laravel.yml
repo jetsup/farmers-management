@@ -55,5 +55,5 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
         env:
           DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+          DB_DATABASE::memory: # Use in-memory database
         run: php artisan test
