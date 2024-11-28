@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # install and set up laravel and php8.3
+      # install and set up laravel and php8.0
       - name: Update apt-get
         run: sudo apt-get update
       - name: Install PHP
-        run: sudo apt-get install php8.3-cli php8.3-xml php8.3-mbstring php8.3-json php8.3-curl php8.3-sqlite3
-        
+        run: sudo apt-get install php8.0-cli php8.0-xml php8.0-mbstring php8.0-json php8.0-curl php8.0-sqlite3
+
       - name: Install Composer
         run: wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
       - name: Move Composer to bin
