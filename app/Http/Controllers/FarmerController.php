@@ -123,11 +123,13 @@ class FarmerController extends Controller
     public function getFarmerData(int $user_id, bool $include_metadata = false)
     {
         // Get the farmer details, amount of milk sold, amount of money earned, number of cows owned, etc.
-        $farmer = Farmer::where('id', $user_id)
-            ->with('user')
+        $farmer = Farmer::where('farmers.id', $user_id)
+            // ->with('user')
+            ->join('users', 'farmers.user_id', '=', 'users.id')
             // join with farmer_cows table to get the number of cows owned by the farmer
             ->withCount('cowsCount')
             ->addSelect(DB::raw('(SELECT COUNT(DISTINCT breed_id) FROM farmer_cows WHERE farmer_id = farmers.id) as breeds_owned'))
+            ->addSelect(["users.name AS farmer_name", "users.email", "users.created_at", "farmers.phone", "farmers.location", "farmers.payment_method", "farmers.is_verified"])
             ->first();
 
         if ($farmer) {
@@ -214,29 +216,6 @@ class FarmerController extends Controller
 
     public function getFarmersDeliveries(int $user_id, int $limit = 0)
     {
-        /*
-        $deliveries = DB::table('milk_delivery')
-            ->join('farmers', 'milk_delivery.farmer_id', '=', 'farmers.id')
-            ->join('users', 'farmers.user_id', '=', 'users.id')
-            ->join('rates', 'milk_delivery.rate_id', '=', 'rates.id')
-            ->join('cow_breeds', 'rates.breed_id', '=', 'cow_breeds.id')
-            ->select(
-                'users.name AS farmer_name',
-                'cow_breeds.breed AS breed',
-                'rates.rate',
-                'milk_delivery.milk_capacity',
-                'milk_delivery.is_paid',
-                'milk_delivery.had_issues',
-                'milk_delivery.created_at AS delivery_time'
-            )
-            ->where('users.id', $user_id)
-            // apply limit if specified
-            ->when($limit > 0, function ($query) use ($limit) {
-                return $query->limit($limit);
-            })
-            ->get();
-            */
-
         $deliveries = MilkDelivery::where('farmer_id', $user_id)
             ->join('rates', 'milk_delivery.rate_id', '=', 'rates.id')
             ->join('cow_breeds', 'rates.breed_id', '=', 'cow_breeds.id')

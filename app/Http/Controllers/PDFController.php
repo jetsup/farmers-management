@@ -27,6 +27,8 @@ class PDFController extends Controller
             'total_milk_amount' => $total_milk_amount,
         ];
 
+        // dd($data);
+
         $pdf = PDF::loadView('report-preview', $data);
         $pdf->setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
         // generate filename using the current timestamp, Farmer's Name 2024-09-12_12:00:00.pdf
