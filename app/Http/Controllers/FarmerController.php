@@ -158,7 +158,7 @@ class FarmerController extends Controller
                     return $delivery->milk_capacity * $delivery->rate;
                 });
 
-                $last_month_delivery_rate_liters->sum('milk_capacity');
+                $last_month_delivery_rate_liters = $last_month_delivery_rate_liters->sum('milk_capacity');
             } else {
                 $last_month_delivery_rate_liters = 0;
             }
@@ -176,7 +176,7 @@ class FarmerController extends Controller
             } else {
                 $this_month_delivery_rate_liters = 0;
             }
-
+            // dd($last_month_delivery_rate_liters, $this_month_delivery_rate_liters);
             $delivery_divisor = $last_month_delivery_rate_liters == 0 ? 1 : $last_month_delivery_rate_liters;
             $delivery_rate = (($this_month_delivery_rate_liters - $last_month_delivery_rate_liters) / $delivery_divisor) * 100;
 
